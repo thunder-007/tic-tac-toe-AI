@@ -58,12 +58,16 @@ function mousePressed() {
     if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height && available_spots.length !== 0) {
         col = floor(mouseX / one_by_three_width);
         row = floor(mouseY / one_by_three_height);
-        board[row][col] = players[curr_player_index];
-        available_spots = available_spots.filter(function(spot){ return spot[0] !== row || spot[1] !== col });
-        curr_player_index ^= 1;
-        winner = checkWinner();
-        if(winner == null) {
-            nextTurn();
+        if(board[row][col] === '') {
+            board[row][col] = players[curr_player_index];
+            available_spots = available_spots.filter(function (spot) {
+                return spot[0] !== row || spot[1] !== col
+            });
+            curr_player_index ^= 1;
+            winner = checkWinner();
+            if (winner == null) {
+                nextTurn();
+            }
         }
     }
 }
