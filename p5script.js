@@ -7,10 +7,11 @@ let available_spots = [];
 let players = ['X', 'O'];
 let curr_player_index = Math.round(Math.random());
 let result_message = document.getElementById("result_message");
-
+let width = 300;
+let height = 300;
 
 function setup() {
-    canvas = createCanvas(300, 300);
+    canvas = createCanvas(width, height);
     canvas.parent('p5canvas');
     frameRate(10);
     for (let row = 0; row < 3; row++) {
@@ -51,16 +52,30 @@ function nextTurn() {
     return true;
 }
 
+function mousePressed() {
+    let one_by_three_width = width / 3;
+    let one_by_three_height = height / 3;
+    if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height && available_spots.length !== 0) {
+        col = floor(mouseX / one_by_three_width);
+        row = floor(mouseY / one_by_three_height);
+        board[row][col] = players[curr_player_index];
+        available_spots = available_spots.filter(function(spot){ return spot[0] !== row || spot[1] !== col });
+        curr_player_index ^= 1;
+        winner = checkWinner();
+        if(winner == null) {
+            nextTurn();
+        }
+    }
+}
+
 function draw() {
-    next_exists = nextTurn();
     winner = checkWinner();
-    let result = "";
     if (winner != null) {
         result = "Winner is " + winner;
         result_message.innerText = result;
         noLoop();
     }
-    if (!next_exists) {
+    else if(available_spots.length === 0) {
         result = "Draw";
         result_message.innerText = result;
         noLoop();
